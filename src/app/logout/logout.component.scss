@@ -1,0 +1,43 @@
+.container {
+  text-align: center;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+
+  .btns {
+    button {
+      padding: 17px 40px;
+      border-radius: 10px;
+      border: 0;
+      background-color: rgb(200, 56, 56);
+      letter-spacing: 1.5px;
+      font-size: 15px;
+      transition: all 0.3s ease;
+      box-shadow: rgb(171, 36, 50) 0px 10px 0px 0px;
+      color: hsl(0, 0%, 100%);
+
+      &:hover {
+        box-shadow: rgb(201, 46, 70) 0px 7px 0px 0px;
+      }
+
+      &:active {
+        background-color: rgb(255, 56, 86);
+        box-shadow: rgb(201, 46, 70) 0px 0px 0px 0px;
+        transform: translateY(5px);
+        transition: 200ms;
+      }
+    }
+
+    .btn-primary {
+      background-color: rgb(56, 180, 56);
+      box-shadow: rgb(26, 170, 50) 0px 10px 0px 0px;
+      &:hover {
+        box-shadow: rgb(46, 180, 70) 0px 7px 0px 0px;
+      }
+      &:active {
+        background-color: rgb(76, 210, 66);
+        box-shadow: rgb(26, 170, 50) 0px 10px 0px 0px;
+      }
+    }
+  }
+}

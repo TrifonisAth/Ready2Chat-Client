@@ -1,0 +1,95 @@
+<h2>Requests</h2>
+<div class="tabs">
+  <div
+    class="tab"
+    (click)="showSent()"
+    [ngClass]="{ selected: getSelectedTab() === 'sent' }"
+  >
+    Sent Requests
+  </div>
+  <div
+    class="tab"
+    (click)="showReceived()"
+    [ngClass]="{ selected: getSelectedTab() === 'received' }"
+  >
+    Received Requests
+  </div>
+</div>
+<div class="request-list" [ngSwitch]="getSelectedTab()">
+  <div *ngSwitchCase="'sent'" class="cards">
+    <div class="card pending" *ngFor="let request of getSentRequests()">
+      <div>
+        <p>
+          {{ request.getRecipient().getName() }}
+        </p>
+        <span class="indicator">Sent request</span>
+      </div>
+
+      <div class="btn-container">
+        <div class="btns">
+          <!-- Has sent a friend request to the person -->
+          <div
+            class="btn-parent"
+            (click)="cancelRequest(request.getRequestId())"
+          >
+            <img src="../../assets/icons/delete.svg" alt="" />
+            <span>Cancel</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- <div *ngSwitchCase="'sent'">
+    <div class="card" *ngFor="let req of getSentRequests()">
+      <p>
+        {{ req.getRecipient().getName() }}
+      </p>
+      <div class="btn-container">
+        <button (click)="cancelRequest(req.getRequestId())">X</button>
+      </div>
+    </div>
+  </div> -->
+  <div *ngSwitchCase="'received'" class="cards">
+    <div class="card pending" *ngFor="let request of getReceivedRequests()">
+      <div>
+        <p>
+          {{ request.getSender().getName() }}
+        </p>
+        <span class="indicator">Received request</span>
+      </div>
+
+      <div class="btn-container">
+        <div class="btns">
+          <!-- Has received a friend request from the person -->
+          <div
+            class="btn-parent"
+            (click)="acceptRequest(request.getRequestId())"
+          >
+            <img src="../../assets/icons/add_friend.svg" alt="" />
+            <span>Accept</span>
+          </div>
+          <div
+            class="btn-parent ignore"
+            (click)="cancelRequest(request.getRequestId())"
+          >
+            <img src="../../assets/icons/delete.svg" alt="" />
+            <span>Ignore</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <div *ngSwitchCase="'received'">
+    <div class="card" *ngFor="let req of getReceivedRequests()">
+      <p>
+        {{ req.getSender().getName() }}
+      </p>
+      <div class="btn-container received">
+        <button (click)="acceptRequest(req.getRequestId())">Accept</button>
+        <button class="ignore" (click)="cancelRequest(req.getRequestId())">
+          Ignore
+        </button>
+      </div>
+    </div>
+  </div> -->
+  </div>
+</div>

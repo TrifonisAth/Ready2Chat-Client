@@ -1,0 +1,48 @@
+<p>
+  Please enter the 6-digit code <br />
+  sent to your email address.
+</p>
+<div class="card" [@fadeInOut]="getAnimationState()">
+  <div class="card2">
+    <form
+      class="form"
+      [formGroup]="mailVerificationForm"
+      (ngSubmit)="onSubmit()"
+    >
+      <h2 id="heading">Email Verification</h2>
+      <div class="field">
+        <img
+          src="../../../assets/icons/lock.svg"
+          class="input-icon"
+          alt="Lock icon"
+        />
+        <input
+          type="text"
+          class="input-field"
+          placeholder="Verification Code"
+          autocomplete="off"
+          minlength="6"
+          maxlength="6"
+          formControlName="code"
+          required
+        />
+      </div>
+      <div class="btns">
+        <button class="btn btn-submit" [disabled]="!mailVerificationForm.valid">
+          Verify
+        </button>
+        or
+        <button
+          class="btn btn-resend"
+          [disabled]="isDisabled()"
+          (click)="resendCode()"
+        >
+          Resend Code
+          <ng-container *ngIf="isDisabled()"
+            >(wait: {{ countdown }}s)</ng-container
+          >
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

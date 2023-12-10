@@ -5,6 +5,7 @@ import { EMPTY, Subject } from 'rxjs';
 import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
 import { switchAll, tap, catchError } from 'rxjs/operators';
 import { Message } from '../models/message';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -26,9 +27,13 @@ export class ConnectionService {
 
   constructor(private userService: UserService) {
     console.log('Connection service initialized');
-    this.userService.user$.subscribe((user) => {
-      this.userId = user.getId();
+
+    this.userService.userState.subscribe({
+      next: (user: User) => {
+        this.userId = user.getId();
+      },
     });
+
     this.socket$.subscribe(
       (msg: any) => this.handleMessages(msg),
       (err: any) => console.log(err),
@@ -72,6 +77,9 @@ export class ConnectionService {
         break;
       case 'ice-candidate':
         this.handleCandidate(data);
+        break;
+      case 'live-update':
+        this.userService.readUpdate(data);
         break;
     }
   }

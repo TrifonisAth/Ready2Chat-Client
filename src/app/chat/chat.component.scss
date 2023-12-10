@@ -1,0 +1,138 @@
+.parent {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  width: 100%;
+  height: 100%;
+  margin-left: 0;
+  padding-left: 0;
+  margin-right: 0;
+  padding-right: 0;
+
+  h2 {
+    text-align: center;
+  }
+
+  .messages {
+    display: flex;
+    flex-direction: column;
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      padding: 0.5rem;
+      margin: 0.5rem;
+      border-radius: 5px;
+      background-color: #313145;
+      flex-wrap: wrap;
+      width: 50%;
+
+      .message-content {
+        font-size: 1rem;
+        color: white;
+      }
+
+      .timestamp,
+      .message-timestamp {
+        font-size: 0.8rem;
+        color: #a0a0a0;
+      }
+    }
+    .message.sent-by-me {
+      align-self: flex-end;
+      background-color: #545464;
+    }
+  }
+
+  // Take the side of the screen.
+  .conversation-list {
+    display: flex;
+    flex-direction: column;
+    background-color: #102530;
+    height: 100%;
+    min-height: 100%;
+    gap: 5px;
+
+    .conversation {
+      background-color: #453145;
+      padding: 0.5rem;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: #414159;
+        cursor: pointer;
+      }
+
+      .conversation-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: white;
+      }
+
+      .conversation-latest-message {
+        font-size: 0.9rem;
+        color: #f0f0f0;
+
+        .message-short {
+          padding: 0 1rem;
+        }
+
+        .timestamp {
+          font-size: 0.8rem;
+          color: #a0a0a0;
+        }
+      }
+    }
+  }
+
+  .selected-conversation {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding-bottom: 140px;
+
+    .top-bar {
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 1.5rem;
+      background-color: #112135;
+    }
+
+    img {
+      height: 2rem;
+      width: 2rem;
+      margin-right: 2rem;
+
+      &:hover {
+        cursor: pointer;
+        transform: scale(1.15);
+      }
+    }
+
+    form {
+      display: flex;
+      margin-top: 90px;
+      margin-bottom: 1rem;
+      justify-content: space-between;
+      position: fixed;
+      bottom: 71px;
+      right: 190px;
+      width: 300px;
+      gap: 1rem;
+
+      input {
+        border-radius: 15px;
+        width: 100%;
+        margin-right: 5px;
+      }
+
+      button {
+        border-radius: 15px;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+}

@@ -1,9 +1,25 @@
-<div class="container h-100">
-  <nav>
-    <a routerLink="/home">Home</a>
-    <a routerLink="/about">About</a>
-    <a routerLink="/contact">Contact</a>
-    <a routerLink="/chat">Go to Chat</a>
+<main class="parent">
+  <nav class="nav">
+    <a routerLink="/dashboard">Dashboard</a>
+    <a routerLink="/register">Register</a>
   </nav>
+  <h1 *ngIf="showTitle()">
+    Ready2Chat <img class="icon" src="../assets/icons/chat1.svg" alt="" />
+  </h1>
   <router-outlet></router-outlet>
-</div>
+</main>
+<footer *ngIf="showTitle()">
+  <p>Developed by Thanos Trifonis</p>
+
+  <div>
+    <a href="https://github.com/TrifonisAth"
+      ><img class="icon" src="../assets/icons/github.svg"
+    /></a>
+
+    <a href="https://www.linkedin.com/in/thanos-trifonis/"
+      ><img class="icon" src="../assets/icons/linkedin.svg" />
+    </a>
+  </div>
+</footer>
+<app-loader></app-loader>
+<app-notification></app-notification>

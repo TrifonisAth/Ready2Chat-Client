@@ -1,0 +1,120 @@
+<h2>Members</h2>
+<div class="tabs">
+  <div
+    class="tab"
+    (click)="showFriends()"
+    [ngClass]="{ selected: getSelectedTab() === 'friends' }"
+  >
+    Friends
+  </div>
+  <div
+    class="tab"
+    (click)="showUsers()"
+    [ngClass]="{ selected: getSelectedTab() === 'users' }"
+  >
+    All Users
+  </div>
+</div>
+<div class="user-container" [ngSwitch]="getSelectedTab()">
+  <div *ngSwitchCase="'friends'" class="cards">
+    <div class="card friend" *ngFor="let friend of getFriends()">
+      <div>
+        <p>
+          <img
+            *ngIf="friend.getIsOnline()"
+            src="../../assets/icons/dot.svg"
+            alt="online-indicator"
+          />
+          {{ friend.getName() }}
+        </p>
+        <span class="indicator">Friends</span>
+      </div>
+
+      <div class="btn-container">
+        <div class="btns">
+          <!-- User is a Friend -->
+          <div
+            (click)="deleteFriend(friend.getFriendshipId())"
+            class="btn-parent"
+          >
+            <img src="../../assets/icons/delete.svg" alt="" />
+            <span>Delete</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngSwitchCase="'users'" class="cards">
+    <div
+      class="card"
+      *ngFor="let user of getUsers()"
+      [ngClass]="{
+        friend: isPersonFriend(user.getId()),
+        pending:
+          hasSentFriendRequest(user.getId()) ||
+          hasReceivedFriendRequest(user.getId())
+      }"
+    >
+      <div>
+        <p>
+          <img
+            *ngIf="isPersonFriend(user.getId()) && isPersonOnline(user.getId())"
+            src="../../assets/icons/dot.svg"
+            alt="online-indicator"
+          />
+          {{ user.getName() }}
+        </p>
+        <span class="indicator">{{ getStatusText(user.getId()) }}</span>
+      </div>
+
+      <div class="btn-container">
+        <div class="btns">
+          <div
+            *ngIf="
+              !isPersonFriend(user.getId()) &&
+              !hasSentFriendRequest(user.getId()) &&
+              !hasReceivedFriendRequest(user.getId())
+            "
+            (click)="sendFriendRequest(user.getId())"
+            class="btn-parent"
+          >
+            <img src="../../assets/icons/add_friend.svg" alt="" />
+            <span>Add</span>
+          </div>
+          <!-- User is a Friend -->
+          <div
+            *ngIf="isPersonFriend(user.getId())"
+            (click)="deletePerson(user.getId())"
+            class="btn-parent"
+          >
+            <img src="../../assets/icons/delete.svg" alt="" />
+            <span>Delete</span>
+          </div>
+          <!-- Received a friend request from the person -->
+          <div *ngIf="hasReceivedFriendRequest(user.getId())" class="btns">
+            <div class="btn-parent" (click)="acceptRequest(user.getId())">
+              <img src="../../assets/icons/add_friend.svg" alt="" />
+              <span>Accept</span>
+            </div>
+
+            <div
+              class="btn-parent"
+              (click)="ignoreReceivedRequest(user.getId())"
+            >
+              <img src="../../assets/icons/delete.svg" alt="" />
+              <span>Ignore</span>
+            </div>
+          </div>
+
+          <!-- Has sent a friend request to the person -->
+          <div *ngIf="hasSentFriendRequest(user.getId())">
+            <div class="btn-parent" (click)="cancelSentRequest(user.getId())">
+              <img src="../../assets/icons/delete.svg" alt="" />
+              <span>Cancel</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

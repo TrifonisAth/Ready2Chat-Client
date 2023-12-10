@@ -1,0 +1,27 @@
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 300px;
+  border: 1px solid black;
+  padding: 10px;
+  border-radius: 4px;
+  z-index: 1000;
+  backdrop-filter: blur(4px);
+}
+
+.notification-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.success-notification {
+  color: white;
+  background-color: green;
+}
+
+.error-notification {
+  color: white;
+  background-color: rgba(200, 0, 0, 0.5);
+}

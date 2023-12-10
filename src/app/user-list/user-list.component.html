@@ -1,0 +1,4 @@
+<!-- Create a card for each user -->
+<div class="user" *ngFor="let user of userService.getUser().getOtherUsers()">
+  {{ user.getName() }}
+</div>

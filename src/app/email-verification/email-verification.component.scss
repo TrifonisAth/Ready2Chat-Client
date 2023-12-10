@@ -1,0 +1,133 @@
+@import "../../variables.scss";
+
+.card {
+  background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
+  border-radius: 22px;
+  transition: all 0.3s;
+
+  .card2 {
+    border-radius: 0;
+    transition: all 0.2s;
+
+    form {
+      display: flex;
+      flex-direction: column;
+      margin: 1.2rem;
+      gap: 10px;
+      padding: 0 1.5rem;
+      background-color: #171717;
+      border-radius: 15px;
+      transform: scale3d(1.2, 1.1, 1.1);
+
+      #heading {
+        text-align: center;
+        margin: 2rem;
+        color: rgb(0, 255, 200);
+        font-size: 1.2rem;
+      }
+
+      .field {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: 25px;
+        padding: 0.6rem;
+        outline: none;
+        color: white;
+        background-color: #171717;
+        box-shadow: inset 2px 5px 10px rgb(5, 5, 5);
+        border: 1px solid transparent;
+        margin-bottom: 3rem;
+        position: relative;
+
+        span {
+          color: #f05050;
+          position: absolute;
+          top: 3rem;
+          text-align: center;
+          font-size: 0.7rem;
+        }
+      }
+
+      .field:hover {
+        border-color: #00ff75;
+      }
+
+      .input-icon {
+        height: 1.2rem;
+        width: 1.2rem;
+      }
+
+      .input-field {
+        background: none;
+        border: none;
+        outline: none;
+        width: 100%;
+        color: rgb(0, 255, 200);
+      }
+
+      .btns {
+        display: flex;
+        flex-direction: column;
+        color: #f0f0f0;
+        text-align: center;
+      }
+
+      .btn {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        margin-bottom: 1rem;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        transition: 0.4s ease-in-out;
+      }
+
+      .btn-submit {
+        background-image: $gradient-orange-coral;
+        color: white;
+      }
+
+      .btn-submit:hover {
+        background-image: linear-gradient(163deg, #00a04dfa 0%, #42d100 100%);
+        color: rgb(255, 255, 255);
+      }
+
+      .btn-resend {
+        font-size: 0.7rem;
+        color: white;
+      }
+
+      p {
+        text-align: center;
+        color: white;
+        font-size: 0.8rem;
+        margin: 1rem;
+      }
+
+      a {
+        text-align: right;
+        text-decoration: none;
+        color: rgb(0, 255, 200);
+        font-size: 0.8rem;
+        margin-bottom: 1rem;
+      }
+    }
+  }
+
+  .card2:hover {
+    border-radius: 20px;
+  }
+}
+
+.card:hover {
+  box-shadow: 0px 0px 40px 2px rgba(0, 255, 217, 0.808);
+}
+
+p {
+  text-align: center;
+  color: white;
+  margin: 1rem;
+}

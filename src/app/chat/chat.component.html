@@ -1,13 +1,100 @@
-<div>
-  <h2>Chat</h2>
-
-  <!-- Display messages -->
-  <div *ngFor="let message of messages">
-    {{ message.sender }}: {{ message.text }}
+<div class="parent">
+  <div class="conversation-list">
+    <div
+      class="conversation"
+      *ngFor="let conversation of conversations"
+      (click)="selectConversation(conversation)"
+    >
+      <div>
+        <div class="conversation-name">
+          {{ conversation.getFriend().getName() }}
+        </div>
+        <div
+          class="conversation-latest-message"
+          *ngIf="conversation.getLatestMessage()"
+        >
+          <span class="latest-message-sender">
+            {{
+              conversation.getLatestMessage().getSender().getName() == username
+                ? "You"
+                : conversation.getLatestMessage().getSender().getName()
+            }}:
+          </span>
+          <span class="message-short">
+            {{ conversation.getLatestMessage().getMessage() | slice : 0 : 20 }}
+            {{
+              conversation.getLatestMessage().getMessage().length > 20
+                ? "..."
+                : ""
+            }}
+          </span>
+          <span class="timestamp">
+            {{ conversation.getLatestMessage().getTimestamp() | customDate }}
+          </span>
+        </div>
+        <div *ngIf="!conversation.getLatestMessage()">Say hi!</div>
+      </div>
+    </div>
+  </div>
+  <!-- Selected conversation -->
+  <div class="selected-conversation">
+    <div class="top-bar">
+      <div></div>
+      <h2 class="title-name">
+        {{ selectedConversation?.getFriend()?.getName() }}
+      </h2>
+      <div>
+        <img
+          src="../../assets/icons/call.svg"
+          alt=""
+          (click)="makeCall('voice')"
+        />
+        <img
+          src="../../assets/icons/video-call.svg"
+          alt=""
+          (click)="makeCall('video')"
+        />
+      </div>
+    </div>
+    <div class="messages">
+      <div
+        *ngFor="let msg of messages"
+        class="message"
+        [ngClass]="{ 'sent-by-me': msg.getSender().getName() == username }"
+      >
+        <div class="message-sender">
+          {{
+            msg.getSender().getName() == username
+              ? "You"
+              : msg.getSender().getName()
+          }}
+        </div>
+        <div class="message-content">{{ msg.getMessage() }}</div>
+        <span class="message-timestamp">
+          {{ msg.getTimestamp() | customDate }}
+        </span>
+      </div>
+    </div>
+    <!-- Text Message input -->
+    <form (ngSubmit)="sendMessage()" #messageForm="ngForm">
+      <input
+        type="text"
+        [(ngModel)]="newMessage"
+        name="message"
+        placeholder="Type your message..."
+        required
+      />
+      <button type="submit">Send</button>
+    </form>
   </div>
 
+  <!-- Display messages -->
+  <!-- <div *ngFor="let message of messages">
+    {{ message.getSender().getName() }}: {{ message.getMessage() }}
+  </div> -->
+
   <!-- Input form for sending messages -->
-  <form (ngSubmit)="sendMessage()" #messageForm="ngForm">
+  <!-- <form (ngSubmit)="sendMessage()" #messageForm="ngForm">
     <input
       type="text"
       [(ngModel)]="newMessage"
@@ -17,5 +104,5 @@
     />
     <input type="number" name="otherId" required [(ngModel)]="otherId" />
     <button type="submit">Send</button>
-  </form>
+  </form> -->
 </div>

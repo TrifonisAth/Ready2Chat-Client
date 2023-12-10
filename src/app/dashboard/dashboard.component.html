@@ -1,0 +1,51 @@
+<div class="dashboard-body">
+  <div class="dashboard-header">
+    <div class="top">
+      <div class="title">
+        <h2>Ready2Chat</h2>
+        <img class="icon" src="../assets/icons/chat1.svg" alt="" />
+      </div>
+    </div>
+    <div class="bottom">
+      <div class="field" [hidden]="!showSearchBar()">
+        <img
+          src="../../../assets/icons/user.svg"
+          class="input-icon"
+          alt="at icon"
+        />
+        <input
+          #search
+          (input)="searchUsers()"
+          type="text"
+          class="input-field"
+          s
+          placeholder="Username"
+          autocomplete="off"
+          maxlength="30"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="dashboard-main">
+    <!-- Load selected components here. -->
+    <router-outlet name="dashboardOutlet"> </router-outlet>
+  </div>
+  <div class="dashboard-footer">
+    <div (click)="navigateToChat()">
+      <img src="../../assets/icons/chat2.svg" alt="" />
+      <span>Chats</span>
+    </div>
+    <div (click)="navigateToFriends()">
+      <img src="../../assets/icons/friends.svg" alt="" />
+      <span>People</span>
+    </div>
+    <div (click)="navigateToRequests()">
+      <img src="../../assets/icons/friends.svg" alt="" />
+      <span>Requests</span>
+    </div>
+    <div (click)="navigateToLogout()">
+      <img src="../../assets/icons/logout.svg" alt="" />
+      <span>Logout</span>
+    </div>
+  </div>
+</div>

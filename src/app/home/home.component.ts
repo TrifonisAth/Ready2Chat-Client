@@ -21,15 +21,15 @@ export class HomeComponent {
   ) {}
 
   selectUser() {
-    const user: User = new User(
-      this.userId,
-      this.userId.toString() + '-display',
-      '3',
-      '4'
-    );
-    console.log('User selected: ', user);
-    this.userService.setUser(user);
-    this.websocketService.connect(this.userId);
-    this.router.navigate(['/chat']);
+    // const user: User = new User(
+    //   this.userId.toString() + '-display',
+    //   '3',
+    //   this.userId,
+    //   '4'
+    // );
+    // console.log('User selected: ', user);
+    // this.userService.setUser(user);
+    // this.websocketService.connect(this.userId);
+    // this.router.navigate(['/chat']);
   }
 }

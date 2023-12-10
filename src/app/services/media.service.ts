@@ -48,6 +48,7 @@ export class MediaService {
     } catch (err: any) {
       console.error('Error accessing user media:', err);
     }
+    return this.localStream;
   }
 
   async initLocalScreenStream() {

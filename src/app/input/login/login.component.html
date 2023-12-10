@@ -1,0 +1,61 @@
+<div class="card" [@fadeInOut]="getAnimationState()">
+  <div class="card2">
+    <form class="form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <h2 id="heading">Login</h2>
+      <div class="field">
+        <img
+          src="../../../assets/icons/mail.svg"
+          class="input-icon"
+          alt="at icon"
+        />
+        <input
+          type="email"
+          class="input-field"
+          placeholder="Email"
+          autocomplete="off"
+          minlength="5"
+          maxlength="40"
+          formControlName="email"
+          required
+        />
+        <span
+          *ngIf="
+            loginForm.get('email')?.errors && loginForm.get('email')?.touched
+          "
+        >
+          Invalid Email. A valid email must contain 5-40 alphanumeric characters
+        </span>
+      </div>
+      <div class="field">
+        <img
+          src="../../../assets/icons/lock.svg"
+          class="input-icon"
+          alt="lock icon"
+        />
+        <input
+          type="password"
+          class="input-field"
+          placeholder="Password"
+          required
+          minlength="8"
+          maxlength="30"
+          formControlName="password"
+        />
+        <span
+          *ngIf="
+            loginForm.get('password')?.errors &&
+            loginForm.get('password')?.touched
+          "
+        >
+          Invalid Password. A valid password must contain 8-30 alphanumeric
+          characters or [!$@&]
+        </span>
+      </div>
+      <a routerLink="/forgot-password">Forgot Password?</a>
+      <button class="btn btn-submit" [disabled]="!loginForm.valid">
+        Submit
+      </button>
+      <p>Don't have an account? <a routerLink="/register">Sign up</a></p>
+    </form>
+  </div>
+</div>
