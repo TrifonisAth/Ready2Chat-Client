@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Observable, Subject, Subscription, endWith } from 'rxjs';
-import { WebSocketSubject, webSocket } from 'rxjs/webSocket';
+import { Observable, Subject, Subscription } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { AuthService } from './auth.service';
 import { UserService } from './user.service';
 
 @Injectable({
@@ -10,11 +8,11 @@ import { UserService } from './user.service';
 })
 export class WebsocketService {
   private userId: number = this.userService.getUser()?.getId();
-  private socketSubject$: any;
   private ws: WebSocket | undefined;
-  // private messageSubject$: Observable<any> | undefined;
   private messageSub: Subject<any> = new Subject<any>();
   private messageSubject$: Observable<any> = this.messageSub.asObservable();
+  private chatSub: Subject<any> = new Subject<any>();
+  private chatObservable$: Observable<any> = this.chatSub.asObservable();
   private userSubscription: Subscription = new Subscription();
 
   constructor(private userService: UserService) {
@@ -23,35 +21,49 @@ export class WebsocketService {
         if (user.getId() !== this.userId) {
           this.userId = user.getId();
           console.log('id changed to: ', this.userId);
-          if (+this.userId != 0) this.connect(this.userId);
+          if (+this.userId != 0) this.connect();
         }
       },
     });
   }
 
-  connect(id: number): void {
+  connect(message = null): void {
     const ticket = this.userService.getUser().getTicket();
     const url = `${environment.WS_ENDPOINT}?` + ticket;
-    console.log(url);
-    // this.ws = webSocket(url);
     this.ws = new WebSocket(url);
     this.ws.onopen = () => {
-      console.log('open');
+      if (message) this.ws?.send(JSON.stringify(message));
     };
-    this.ws.onmessage = (msg) => {
-      this.messageSub.next(msg);
+    this.ws.onmessage = (msg: any) => {
+      const parsed = JSON.parse(msg.data);
+      switch (parsed.event) {
+        case 'text':
+          this.chatSub.next(parsed.data);
+          break;
+        default:
+          this.messageSub.next(msg);
+      }
     };
-    this.ws.onclose = () => {
-      console.log('close');
+    this.ws.onclose = (ev) => {
+      console.log(ev.reason);
     };
-    // this.messageSubject$ = this.ws.asObservable();
+    this.ws.onerror = (ev) => {
+      console.log(ev);
+    };
   }
 
-  // private getNewWebSocket() {
-  //   return webSocket(`${environment.WS_ENDPOINT}?${this.userId}`);
-  // }
-
   sendMessage(msg: any): void {
+    if (msg === null) return;
+    if (this.ws?.readyState === 3 || this.ws?.readyState === 2) {
+      this.ws.close();
+      this.connect(msg);
+    }
+    if (this.ws?.readyState === 0) {
+      setTimeout(() => {
+        this.sendMessage(msg);
+      }, 1500);
+      return;
+    }
     this.ws?.send(JSON.stringify(msg));
   }
 
@@ -59,9 +71,23 @@ export class WebsocketService {
     return this.messageSubject$;
   }
 
+  getChatMessagesObservable() {
+    return this.chatObservable$;
+  }
+
+  getUserId(): number {
+    return this.userId;
+  }
+
+  getSocket(): WebSocket | undefined {
+    return this.ws;
+  }
+
   ngOnDestroy() {
-    console.log('destroying websocket service');
-    this.ws?.close();
     this.userSubscription.unsubscribe();
+  }
+
+  close() {
+    this.ws?.close(3000, 'manual close');
   }
 }

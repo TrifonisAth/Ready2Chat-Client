@@ -15,11 +15,23 @@
   </div>
 </div>
 <div class="container d-flex flex-column">
-  <div>
-    <video class="video" #remoteVideo autoplay></video>
-    <video class="video" #remoteScreen autoplay></video>
+  <div class="streams remote-peer">
+    <video
+      *ngIf="remoteStream"
+      class="video"
+      #remoteVideo
+      autoplay
+      [srcObject]="remoteStream"
+    ></video>
+    <video
+      *ngIf="remoteScreen"
+      class="video"
+      #remoteScreen
+      autoplay
+      [srcObject]="remoteScreen"
+    ></video>
   </div>
-  <div class="container">
+  <div class="streams local-peer">
     <video class="video" #localVideo autoplay [srcObject]="localStream"></video>
     <video
       class="video share-screen"

@@ -21,7 +21,6 @@ export class DashboardComponent {
 
   ngOnInit(): void {
     console.log('Dashboard component initialized');
-    // this.websocketService.connect(this.userService.getUser().getId());
   }
 
   // Create user search functionality.

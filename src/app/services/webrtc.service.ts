@@ -1,10 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Message } from '../models/message';
 import { WebsocketService } from './websocket.service';
-import { map } from 'rxjs/internal/operators/map';
-import { catchError, tap } from 'rxjs/operators';
 import { UserService } from './user.service';
-import { Subject, Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { ChatMessage } from '../models/chatMessage';
 
 @Injectable({
@@ -21,7 +19,8 @@ export class WebrtcService {
 
   private callId = 0;
   // Temporal.
-  chatSubject$ = new Subject<any>();
+  private chatSubject$ = new Subject<any>();
+  chatStatus = this.chatSubject$.asObservable();
 
   constructor(
     private webSocketService: WebsocketService,
@@ -33,8 +32,6 @@ export class WebrtcService {
       },
     });
   }
-
-  ngOnInit() {}
 
   handleMessages(msg: any) {
     console.log('Message received: ', msg);
@@ -56,8 +53,7 @@ export class WebrtcService {
     const otherId: number = message.from;
     // If there is no connection with this peer, create one now.
     if (!this.peerConnections.has(otherId)) {
-      this.initPeerConnection(otherId);
-      const pc = this.peerConnections.get(otherId);
+      const pc = this.initPeerConnection(otherId);
       if (!pc) {
         console.error('Peer connection not found');
         return;
@@ -81,18 +77,18 @@ export class WebrtcService {
     const offer = new RTCSessionDescription(sessionDescription);
     // Set it as the remote description of the local peer connection.
     await this.peerConnections.get(otherId)?.setRemoteDescription(offer);
-    if (
-      this.peerConnections.get(otherId)?.signalingState !==
-        'have-remote-offer' &&
-      this.peerConnections.get(otherId)?.signalingState !==
-        'have-local-pranswer'
-    )
-      return;
+    // if (
+    //   this.peerConnections.get(otherId)?.signalingState !==
+    //     'have-remote-offer' &&
+    //   this.peerConnections.get(otherId)?.signalingState !==
+    //     'have-local-pranswer'
+    // )
+    //   return;
     this.createAnswer(otherId);
   }
 
   // Create a new RTCPeerConnection and Channel.
-  initPeerConnection(otherId: number) {
+  initPeerConnection(otherId: number): RTCPeerConnection {
     console.log('Initializing peer connection for id: ', otherId);
     const config = { iceServers: [{ urls: 'stun:stun1.l.google.com:19302' }] };
     const peerConnection: RTCPeerConnection = new RTCPeerConnection(config);
@@ -119,51 +115,14 @@ export class WebrtcService {
       this.remoteStreamSubscription.next(this.remoteStream);
     };
 
-    // peerConnection.onnegotiationneeded = async () => {
-    //   // test
-    //   // if (peerConnection.signalingState !== 'stable') return;
-    //   console.log('Negotiation needed');
-    //   await this.negotiation(otherId);
-    // };
-
     peerConnection.oniceconnectionstatechange = (event) => {
       if (peerConnection.iceConnectionState === 'failed') {
         console.log('Restarting ICE');
         peerConnection.restartIce();
       }
     };
-
-    // // Listen for chat messages.
-    // channel.onmessage = (event) => {
-    //   console.log('Message received: ', event.data);
-    //   this.chatSubject$.next(event.data);
-    // };
-
-    // channel.onopen = () => {
-    //   console.log('Channel opened');
-    //   console.log(channel);
-    // };
+    return peerConnection;
   }
-
-  private async negotiation(id: number) {
-    const myId = this.userService.getUser()?.getId() || 0;
-    // if (myId > id) return;
-    let makingOffer = false;
-    try {
-      makingOffer = true;
-      const pc = this.peerConnections.get(id);
-      const offer = await pc?.createOffer();
-      await pc?.setLocalDescription();
-      const msg: Message = new Message('offer', pc?.localDescription, id, myId);
-      this.webSocketService.sendMessage(msg);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      makingOffer = false;
-    }
-  }
-
-  private async perfectNegotiation(id: number) {}
 
   private async handleAnswer(message: Message) {
     const data = message.data;
@@ -179,6 +138,7 @@ export class WebrtcService {
   }
 
   private handleCandidate(message: Message) {
+    console.log('Candidate received: ', message);
     const data = message.data;
     // Create RTCIceCandidateInit object
     const iceCandidateInit = {
@@ -206,7 +166,6 @@ export class WebrtcService {
   }
 
   private async createAnswer(recipientId: number) {
-    // // test
     if (
       this.peerConnections.get(recipientId)?.signalingState !==
         'have-remote-offer' &&
@@ -215,7 +174,6 @@ export class WebrtcService {
     )
       return;
     const answer = await this.peerConnections.get(recipientId)?.createAnswer();
-    // if (!answer) return;
     await this.peerConnections.get(recipientId)?.setLocalDescription(answer);
     const msg: Message = new Message(
       'answer',
@@ -226,11 +184,6 @@ export class WebrtcService {
 
     // Upload the answer to the server.
     this.webSocketService.sendMessage(msg);
-  }
-
-  callPeer(recipientId: number) {
-    this.setCallId(recipientId);
-    this.initPeerConnection(recipientId);
   }
 
   async sendToPeer(message: ChatMessage) {
@@ -309,5 +262,11 @@ export class WebrtcService {
 
   getCallId() {
     return this.callId;
+  }
+
+  closePeerConnection(id: number) {
+    this.peerConnections.get(id)?.close();
+    this.peerConnections.delete(id);
+    this.channels.delete(id);
   }
 }

@@ -1,7 +1,7 @@
 import { Person } from './person';
 
 export class ChatMessage {
-  private id: number;
+  private messageId: number;
   private friendshipId: number;
   private sender: Person;
   private recipient: Person;
@@ -9,7 +9,7 @@ export class ChatMessage {
   private timestamp: Date = new Date();
 
   constructor(messageDTO: any) {
-    this.id = messageDTO.messageId || null;
+    this.messageId = messageDTO.messageId || null;
     this.friendshipId = messageDTO.friendshipId;
     this.timestamp = new Date(messageDTO.timestamp) || new Date();
     this.sender = new Person(messageDTO.sender);
@@ -22,7 +22,7 @@ export class ChatMessage {
   }
 
   getId(): number {
-    return this.id;
+    return this.messageId;
   }
 
   getSender(): Person {

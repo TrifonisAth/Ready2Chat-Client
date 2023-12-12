@@ -186,7 +186,6 @@ export class AuthService {
           response.message
         );
         this.userService.readResponse(response);
-        // this.router.navigate(['/dashboard']);
       },
       error: (error) => {
         this.loaderService.hide();

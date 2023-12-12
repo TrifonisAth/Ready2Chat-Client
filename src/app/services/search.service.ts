@@ -7,5 +7,4 @@ import { Subject } from 'rxjs';
 export class SearchService {
   public querySubject = new Subject<string>();
   public query$ = this.querySubject.asObservable();
-  constructor() {}
 }

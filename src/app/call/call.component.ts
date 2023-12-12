@@ -1,9 +1,9 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { ConnectionService } from '../services/connection.service';
 import { MediaService } from '../services/media.service';
 import { WebrtcService } from '../services/webrtc.service';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { WebsocketService } from '../services/websocket.service';
 
 @Component({
   selector: 'app-call',
@@ -19,18 +19,19 @@ export class CallComponent {
   localScreenStream: MediaStream | null = null;
   callActive = true;
   otherId = this.webrtcService.getCallId();
-  remoteStream: MediaStream | null = null;
+  remoteStream: MediaStream | null = this.webrtcService.getRemoteStream();
   callSubscription: Subscription = new Subscription();
 
   constructor(
     private mediaService: MediaService,
     private webrtcService: WebrtcService,
-    private router: Router
+    private router: Router,
+    private websocketService: WebsocketService
   ) {
     this.callSubscription = this.webrtcService.remoteStreamStatus.subscribe({
       next: (stream) => {
+        console.log('Remote stream received: ', stream);
         this.remoteStream = stream;
-        this.remoteVideo.nativeElement.srcObject = this.remoteStream;
       },
     });
   }
@@ -70,15 +71,20 @@ export class CallComponent {
     this.localStream = stream;
     console.log('Stream promise:', stream);
     this.callActive = true;
-    console.log(this.localStream);
-    this.webrtcService.initPeerConnection(this.otherId);
-    console.log('Peer connections:', this.webrtcService.getPeerConnections());
+    let pc = this.webrtcService.getPeerConnections().get(this.otherId) || null;
+    if (!pc) {
+      pc = this.webrtcService.initPeerConnection(this.otherId);
+    }
     this.webrtcService.setTracks(stream!);
+    console.log('before remote stream');
+    this.remoteStream = this.webrtcService.getRemoteStream();
   }
 
   hangup() {
     this.mediaService.hangup();
     this.router.navigate(['/dashboard']);
+    this.webrtcService.closePeerConnection(this.otherId);
+    this.websocketService.close();
   }
 
   isCallActive() {

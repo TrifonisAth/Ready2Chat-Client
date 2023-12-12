@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
 import { ChatComponent } from './chat/chat.component';
 import { RegisterComponent } from './input/register/register.component';
 import { LoginComponent } from './input/login/login.component';
@@ -34,7 +33,6 @@ const routes: Routes = [
     component: EmailVerificationComponent,
     data: { animation: 'fadeInOut' },
   },
-  { path: 'home', component: HomeComponent },
   {
     path: 'logout',
     component: LogoutComponent,

@@ -1,9 +1,6 @@
 import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { Subject } from 'rxjs';
-import { Friend } from '../models/friend';
-import { Person } from '../models/person';
-import { ChatMessage } from '../models/chatMessage';
 import { Conversation } from '../models/converstion';
 
 @Injectable({
@@ -17,10 +14,6 @@ export class UserService {
     Conversation[]
   >();
   public conversationState = this.conversationSubject.asObservable();
-
-  constructor() {}
-
-  readUpdate(data: any) {}
 
   hasSentFriendRequest(personId: number): boolean {
     return this.user.hasSentFriendRequest(personId);
@@ -40,7 +33,6 @@ export class UserService {
   }
 
   readResponse(response: any): void {
-    console.log(response);
     this.user = new User(
       response.user.username,
       response.user.email,

@@ -4,10 +4,7 @@ import {
   ElementRef,
   ViewChild,
 } from '@angular/core';
-import { ConnectionService } from '../services/connection.service';
 import { UserService } from '../services/user.service';
-import { NgForm } from '@angular/forms';
-import { User } from '../models/user';
 import { WebsocketService } from '../services/websocket.service';
 import { WebrtcService } from '../services/webrtc.service';
 import { AuthService } from '../services/auth.service';
@@ -15,6 +12,8 @@ import { ChatMessage } from '../models/chatMessage';
 import { Conversation } from '../models/converstion';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
+import { MediaService } from '../services/media.service';
+import { Message } from '../models/message';
 
 @Component({
   selector: 'app-chat',
@@ -23,6 +22,7 @@ import { Router } from '@angular/router';
 })
 export class ChatComponent {
   @ViewChild('chat') chat: ElementRef | undefined;
+  @ViewChild('messageList') messageList: ElementRef | undefined;
   // messages: { sender: string | undefined; text: string }[] = [];
   conversations: Conversation[] = this.userService
     .getUser()
@@ -35,11 +35,14 @@ export class ChatComponent {
   conversationSubscription: Subscription = new Subscription();
   userSubscription: Subscription = new Subscription();
   username: string = this.userService.getUser().getDisplayName();
+  chatSubscription: Subscription = new Subscription();
 
   constructor(
     // private connectionService: ConnectionService,
     private userService: UserService,
     private webrtcService: WebrtcService,
+    private mediaService: MediaService,
+    private webSocketService: WebsocketService,
     private cdr: ChangeDetectorRef,
     private auth: AuthService,
     private router: Router
@@ -50,13 +53,11 @@ export class ChatComponent {
 
   makeCall(type: string): void {
     if (this.selectedConversation === null) return;
-    console.log(
-      'Making call to: ',
-      this.selectedConversation.getFriend().getId()
-    );
+
     this.webrtcService.setCallId(
       this.selectedConversation?.getFriend().getId()!
     );
+    this.mediaService.setCallType(type);
     this.router.navigate(['/call']);
   }
 
@@ -68,6 +69,15 @@ export class ChatComponent {
 
   ngOnInit(): void {
     console.log('Chat component initialized', this.userService.getUser());
+
+    if (
+      this.webSocketService.getSocket()?.CLOSED ||
+      this.webSocketService.getSocket()?.CLOSING
+    ) {
+      console.log('Connecting to websocket');
+
+      this.webSocketService.connect();
+    }
 
     this.conversationSubscription =
       this.userService.conversationState.subscribe((conversations) => {
@@ -82,13 +92,21 @@ export class ChatComponent {
       this.selectConversation(this.conversations[0]);
     });
 
-    // Subscribe to incoming messages
-    this.webrtcService.chatSubject$.subscribe((message) => {
-      const parsed = JSON.parse(message);
-      const msg = new ChatMessage(parsed);
-      this.messages.push(msg);
-      this.cdr.detectChanges();
-      this.messageSound.play();
+    this.chatSubscription = this.webSocketService
+      .getChatMessagesObservable()
+      .subscribe((message) => {
+        const msg = new ChatMessage(message);
+        this.messages.push(msg);
+        this.cdr.detectChanges();
+        this.scrollToBottom();
+        this.messageSound.play();
+      });
+  }
+
+  scrollToBottom() {
+    this.messageList?.nativeElement.scrollTo({
+      top: this.messageList.nativeElement.scrollHeight,
+      behavior: 'smooth',
     });
   }
 
@@ -107,10 +125,18 @@ export class ChatComponent {
       friendshipId: fId,
       timestamp: new Date(),
     });
+    const msg: Message = new Message(
+      'text',
+      message,
+      this.otherId,
+      this.userService.getUser().getId()
+    );
     // Display the message locally
     this.messages.push(message);
+    // Send the message through the websocket.
+    this.webSocketService.sendMessage(msg);
     // Send the message through the data channel
-    this.webrtcService.sendToPeer(message);
+    // this.webrtcService.sendToPeer(message);
     // Store the message in the database
     this.auth.storeMessage(message);
     // Clear the input field
@@ -118,7 +144,9 @@ export class ChatComponent {
   }
 
   ngOnDestroy(): void {
+    console.log('Chat component destroyed');
     this.conversationSubscription.unsubscribe();
     this.userSubscription.unsubscribe();
+    this.chatSubscription.unsubscribe();
   }
 }

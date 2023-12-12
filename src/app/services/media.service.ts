@@ -38,12 +38,10 @@ export class MediaService {
   async initLocalStream() {
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
+        video: this.cameraActive,
+        audio: this.micActive,
       });
       this.callActive = true;
-      this.cameraActive = true;
-      this.micActive = true;
       this.localStreamSubject.next(this.localStream);
     } catch (err: any) {
       console.error('Error accessing user media:', err);
@@ -79,17 +77,6 @@ export class MediaService {
     }
   }
 
-  // async toggleScreen() {
-  //   if (this.localScreenStream == null) {
-  //     await this.initLocalScreenStream();
-  //   }
-  //   const videoTrack = this.localScreenStream?.getVideoTracks()[0];
-  //   if (videoTrack) {
-  //     videoTrack.enabled = !videoTrack.enabled;
-  //     this.screenActive = videoTrack.enabled;
-  //   }
-  // }
-
   async toggleMic() {
     const audioTrack = this.localStream?.getAudioTracks()[0];
     if (audioTrack) {
@@ -105,19 +92,6 @@ export class MediaService {
       this.cameraActive = videoTrack.enabled;
     }
   }
-
-  // async toggleCamera() {
-  //   if (this.cameraActive) {
-  //     this.stopLocalStream();
-  //     return;
-  //   }
-  //   this.initLocalStream();
-  //   const videoTrack = this.localStream?.getVideoTracks()[0];
-  //   if (videoTrack) {
-  //     videoTrack.enabled = !videoTrack.enabled;
-  //     this.cameraActive = videoTrack.enabled;
-  //   }
-  // }
 
   async hangup() {
     try {
@@ -160,5 +134,16 @@ export class MediaService {
 
   isCallActive() {
     return this.callActive;
+  }
+
+  setCallType(type: string) {
+    this.callActive = true;
+    if (type === 'video') {
+      this.cameraActive = true;
+      this.micActive = true;
+    } else if (type === 'audio') {
+      this.cameraActive = false;
+      this.micActive = true;
+    }
   }
 }
