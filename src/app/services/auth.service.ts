@@ -228,7 +228,7 @@ export class AuthService {
   sendFriendRequest(id: number): Observable<any> {
     const headers = { 'content-type': 'application/json' };
     const res: Observable<any> = this.http.post(
-      this.apiUrl + '/friendRequest/create',
+      this.apiUrl + `/friendRequest`,
       id,
       { headers, withCredentials: true }
     );
@@ -253,9 +253,8 @@ export class AuthService {
 
   cancelRequest(id: number): Observable<any> {
     const headers = { 'content-type': 'application/json' };
-    const res: Observable<any> = this.http.post(
-      this.apiUrl + '/friendRequest/delete',
-      id,
+    const res: Observable<any> = this.http.delete(
+      this.apiUrl + `/friendRequest/${id}`,
       { headers, withCredentials: true }
     );
     res.subscribe({
@@ -277,10 +276,36 @@ export class AuthService {
     return res;
   }
 
+  // cancelRequest(id: number): Observable<any> {
+  //   const headers = { 'content-type': 'application/json' };
+  //   const res: Observable<any> = this.http.post(
+  //     this.apiUrl + '/friendRequest/delete',
+  //     id,
+  //     { headers, withCredentials: true }
+  //   );
+  //   res.subscribe({
+  //     next: (response) => {
+  //       this.userService.setFriendRequests(response);
+  //       this.notificationService.showNotification(
+  //         NotificationType.Success,
+  //         response.message
+  //       );
+  //     },
+  //     error: (error) => {
+  //       this.notificationService.showNotification(
+  //         NotificationType.Error,
+  //         error.error
+  //       );
+  //       console.log(error);
+  //     },
+  //   });
+  //   return res;
+  // }
+
   acceptRequest(id: number): Observable<any> {
     const headers = { 'content-type': 'application/json' };
     const res: Observable<any> = this.http.post(
-      this.apiUrl + '/friendRequest/accept',
+      this.apiUrl + `/friendRequest/${id}`,
       id,
       { headers, withCredentials: true }
     );
@@ -306,9 +331,8 @@ export class AuthService {
 
   deleteFriend(id: number): Observable<any> {
     const headers = { 'content-type': 'application/json' };
-    const res: Observable<any> = this.http.post(
-      this.apiUrl + '/friend/delete',
-      id,
+    const res: Observable<any> = this.http.delete(
+      this.apiUrl + `/friend/${id}`,
       { headers, withCredentials: true }
     );
     res.subscribe({

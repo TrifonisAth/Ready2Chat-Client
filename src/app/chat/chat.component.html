@@ -75,6 +75,12 @@
         </span>
       </div>
     </div>
+    <!-- <img
+      src="../../assets/icons/arrow-down.svg"
+      (click)="scrollToBottom()"
+      alt="scrollToBottom"
+      *ngIf="!isScrolledToBottom()"
+    /> -->
     <!-- Text Message input -->
     <form (ngSubmit)="sendMessage()" #messageForm="ngForm">
       <input

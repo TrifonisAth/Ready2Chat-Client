@@ -40,6 +40,12 @@ export class WebsocketService {
         case 'text':
           this.chatSub.next(parsed.data);
           break;
+        case 'user-connected':
+          this.userService.setFriendOnline(parsed.from, true);
+          break;
+        case 'user-disconnected':
+          this.userService.setFriendOnline(parsed.from, false);
+          break;
         default:
           this.messageSub.next(msg);
       }

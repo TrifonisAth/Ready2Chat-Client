@@ -76,4 +76,9 @@ export class UserService {
     const fId = this.user.getFriendshipIdByPersonId(id);
     return this.user.isFriendOnline(fId);
   }
+
+  setFriendOnline(pId: number, isOnline: boolean): void {
+    this.user.setFriendOnline(pId, isOnline);
+    this.userSubject.next(this.user);
+  }
 }

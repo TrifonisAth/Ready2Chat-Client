@@ -186,4 +186,11 @@ export class User {
       name: this.displayName,
     });
   }
+
+  setFriendOnline(pId: number, isOnline: boolean): void {
+    const fId = this.personId_FriendIdMap.get(pId);
+    if (fId) {
+      this.friends.get(fId)?.setIsOnline(isOnline);
+    }
+  }
 }

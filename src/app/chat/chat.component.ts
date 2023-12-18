@@ -65,6 +65,7 @@ export class ChatComponent {
     this.selectedConversation = conversation;
     this.messages = conversation.getMessages();
     this.otherId = conversation.getFriend().getId();
+    this.scrollToBottom();
   }
 
   ngOnInit(): void {
@@ -105,9 +106,21 @@ export class ChatComponent {
 
   scrollToBottom() {
     this.messageList?.nativeElement.scrollTo({
-      top: this.messageList.nativeElement.scrollHeight,
+      top:
+        this.messageList.nativeElement.scrollHeight -
+        this.messageList.nativeElement.clientHeight,
       behavior: 'smooth',
     });
+    this.cdr.detectChanges();
+  }
+
+  isScrolledToBottom(): boolean {
+    const element = this.messageList?.nativeElement;
+    if (element === undefined) return false;
+    console.log(element.scrollHeight - element.scrollTop, element.clientHeight);
+    return (
+      element.scrollHeight - element.scrollTop <= element.clientHeight + 50
+    );
   }
 
   sendMessage(): void {
