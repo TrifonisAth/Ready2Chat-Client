@@ -72,8 +72,12 @@ export class ChatComponent {
     console.log('Chat component initialized', this.userService.getUser());
 
     if (
-      this.webSocketService.getSocket()?.CLOSED ||
-      this.webSocketService.getSocket()?.CLOSING
+      !(
+        this.webSocketService.getSocket()?.OPEN ||
+        this.webSocketService.getSocket()?.CONNECTING
+      )
+      // this.webSocketService.getSocket()?.CLOSED ||
+      // this.webSocketService.getSocket()?.CLOSING
     ) {
       console.log('Connecting to websocket');
 
@@ -111,7 +115,7 @@ export class ChatComponent {
         this.messageList.nativeElement.clientHeight,
       behavior: 'smooth',
     });
-    this.cdr.detectChanges();
+    // this.cdr.detectChanges();
   }
 
   isScrolledToBottom(): boolean {
