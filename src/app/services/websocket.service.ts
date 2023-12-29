@@ -29,7 +29,9 @@ export class WebsocketService {
 
   connect(message = null): void {
     const ticket = this.userService.getUser().getTicket();
+    if (ticket === '') return;
     const url = `${environment.WS_ENDPOINT}?` + ticket;
+    console.log('connecting to: ', url);
     this.ws = new WebSocket(url);
     this.ws.onopen = () => {
       if (message) this.ws?.send(JSON.stringify(message));
