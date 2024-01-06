@@ -39,7 +39,7 @@ export class AuthService {
   storeMessage(message: any) {
     const headers = { 'content-type': 'application/json' };
     const res: Observable<any> = this.http.post(
-      this.apiUrl + '/message/store',
+      this.apiUrl + '/message',
       message,
       { headers, withCredentials: true }
     );

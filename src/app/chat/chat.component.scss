@@ -10,6 +10,7 @@
 
   h2 {
     text-align: center;
+    font-size: 1.5rem;
   }
 
   .messages {
@@ -94,14 +95,14 @@
     flex-direction: column;
     align-items: center;
     width: 100%;
-    padding-bottom: 140px;
+    // padding-bottom: 140px;
 
     .top-bar {
       width: 100%;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 1.5rem;
+      padding: 0.5rem;
       background-color: #112135;
     }
 
@@ -118,10 +119,9 @@
 
     form {
       display: flex;
-      margin-top: 90px;
+      margin-top: 1rem;
       margin-bottom: 1rem;
       justify-content: space-between;
-      position: fixed;
       bottom: 71px;
       right: 190px;
       width: 300px;
@@ -140,5 +140,8 @@
   }
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-height: 1000px) {
+  .parent .messages {
+    max-height: max(calc(90vh - 150px), 60vh);
+  }
 }

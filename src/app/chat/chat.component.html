@@ -90,7 +90,13 @@
         placeholder="Type your message..."
         required
       />
-      <button type="submit">Send</button>
+      <button type="submit" style="display: none"></button>
+      <img
+        src="../../assets/icons/send.svg"
+        alt="send"
+        (click)="submitForm()"
+        style="cursor: pointer"
+      />
     </form>
   </div>
 

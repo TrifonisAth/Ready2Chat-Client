@@ -160,6 +160,10 @@ export class ChatComponent {
     this.newMessage = '';
   }
 
+  submitForm(): void {
+    this.sendMessage();
+  }
+
   ngOnDestroy(): void {
     console.log('Chat component destroyed');
     this.conversationSubscription.unsubscribe();
